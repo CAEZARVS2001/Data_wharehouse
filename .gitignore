@@ -1,2 +1,14 @@
+# Datos
 data/raw/
+data/bronze/
+data/silver/
+data/gold/
+
+# Python
 venv/
+
+# Credenciales
+.env
+
+# dbt
+logs/
