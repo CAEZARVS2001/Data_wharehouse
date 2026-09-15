@@ -12,3 +12,6 @@ venv/
 
 # dbt
 logs/
+
+# Documentation
+Documentation.md

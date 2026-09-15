@@ -26,7 +26,7 @@ for csv_file in RAW_DIR.glob("*.csv"):
 
     table_name = f"bronze_{csv_file.stem}"
 
-    df = pd.read_csv(csv_file)
+    df = pd.read_csv(csv_file, dtype='str')
     df["_ingested_at"] = datetime.now()
     df["_source_file"] = csv_file.name
     df.to_sql(table_name, engine, schema='bronze', if_exists='replace', index=False)

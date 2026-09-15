@@ -1,0 +1,32 @@
+version: 2
+
+models:
+
+  - name: stg_orders
+    description: "Orders cleaned and typed from bronze"
+    columns:
+      - name: order_id
+        description: "Unique identifier for order (PK)"
+        tests:
+          - unique
+          - not_null
+      - name: customer_id
+        description: "Customer that make the order"
+        tests:
+          - not_null
+      - name: order_status
+        description: "Status of the order (delivered, shipped, canceled, etc.)"
+
+  - name: stg_customers
+    description: "Customers cleaned and typed from bronze"
+    columns:
+      - name: customer_id
+        description: "Unique identifier for each customer (PK)"
+        tests:
+          - unique
+          - not_null
+      - name: customer_unique_id
+        description: "Identifier for each customer (in their multiple orders)"
+        tests:
+          - not_null
+        
