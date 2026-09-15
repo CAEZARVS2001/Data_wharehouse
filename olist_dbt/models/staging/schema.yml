@@ -34,6 +34,8 @@ models:
           - not_null
       - name: customer_zip_code_prefix
         description: "First five digits of the zip code"
+        tests:
+          - not_null
       - name: customer_state
         description: "27 states of Brazil"
         tests:
@@ -48,10 +50,66 @@ models:
     columns: 
     - name: geolocation_zip_code_prefix
       description: "First five digits of the zip code"
+      tests:
+        - not_null
     - name: geolocation_state
       description: "27 states of Brazil"
       tests:
         - accepted_values:
             values: ['AC','AL','AM','AP','BA','CE','DF','ES','GO','MA','MG','MS','MT','PA','PB','PE','PI','PR','RJ','RN','RO','RR','RS','SC','SE','SP','TO']
+  
+  - name: stg_sellers
+    description: "Seller data"
+    tests:
+      - dbt_utils.expression_is_true:
+          expression: "length(seller_zip_code_prefix) = 5"
+    columns:
+      - name: seller_id
+        description: "Unique identifier for each seller (PK)"
+        tests:
+          - unique
+          - not_null
+      - name: seller_zip_code_prefix
+        description: "First five digits of the zip code of the seller"
+        tests:
+          - not_null
+      - name: seller_state
+        description: "27 states of Brazil"
+        tests:
+          - accepted_values:
+              values: ['AC','AL','AM','AP','BA','CE','DF','ES','GO','MA','MG','MS','MT','PA','PB','PE','PI','PR','RJ','RN','RO','RR','RS','SC','SE','SP','TO']
+  
+  - name: stg_order_items
+    description: "The items that contains each order"
+    columns:
+      - name: order_id
+        description: "Unique identifier for each order (FK)"
+        tests:
+        - not_null
+      - name: order_item_id
+        description: "Identifier for each product inside an order (FK)"
+        tests:
+          - not_null
+      - name: product_id
+        description: "Identifier for each product (FK)"
+        tests:
+          - not_null
+      - name: seller_id
+        description: "Identifier for each seller (FK)"
+        tests:
+          - not_null
+
+  - name: stg_order_payments
+    description: "Payments of the orders"
+    columns:
+      - name: order_id
+        description: "Unique identifier for each order (FK)"
+        tests:
+          - not_null
+      - name: payment_type
+        description: "How payed the order"
+        tests:
+          - accepted_values:
+              values: ['credit_card','boleto','voucher','debit_card','not_defined']
         
         
