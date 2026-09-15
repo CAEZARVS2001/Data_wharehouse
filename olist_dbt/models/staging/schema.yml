@@ -19,6 +19,9 @@ models:
 
   - name: stg_customers
     description: "Customers cleaned and typed from bronze"
+    tests:
+      - dbt_utils.expression_is_true:
+          expression: "length(customer_zip_code_prefix) = 5"
     columns:
       - name: customer_id
         description: "Unique identifier for each customer (PK)"
@@ -29,4 +32,26 @@ models:
         description: "Identifier for each customer (in their multiple orders)"
         tests:
           - not_null
+      - name: customer_zip_code_prefix
+        description: "First five digits of the zip code"
+      - name: customer_state
+        description: "27 states of Brazil"
+        tests:
+          - accepted_values:
+              values: ['AC','AL','AM','AP','BA','CE','DF','ES','GO','MA','MG','MS','MT','PA','PB','PE','PI','PR','RJ','RN','RO','RR','RS','SC','SE','SP','TO']
+  
+  - name: stg_geolocation
+    description: "Geospatial data of the cities"
+    tests:
+      - dbt_utils.expression_is_true:
+          expression: "length(geolocation_zip_code_prefix) = 5"
+    columns: 
+    - name: geolocation_zip_code_prefix
+      description: "First five digits of the zip code"
+    - name: geolocation_state
+      description: "27 states of Brazil"
+      tests:
+        - accepted_values:
+            values: ['AC','AL','AM','AP','BA','CE','DF','ES','GO','MA','MG','MS','MT','PA','PB','PE','PI','PR','RJ','RN','RO','RR','RS','SC','SE','SP','TO']
+        
         
