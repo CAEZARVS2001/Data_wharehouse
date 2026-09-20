@@ -20,6 +20,10 @@ models:
         description: "First five digits of the zip code"
         tests:
           - not_null
+      - name: customer_city
+        description: "Name of the city"
+        tests:
+          - not_null
       - name: customer_state
         description: "27 states of Brazil"
         tests:

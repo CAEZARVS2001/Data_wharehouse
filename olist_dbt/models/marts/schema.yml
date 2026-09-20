@@ -1,0 +1,141 @@
+version: 2
+
+models:
+  - name: dim_customer
+    description: "Customer dimension, one row per customer_id"
+    columns:
+      - name: customer_id
+        description: "Unique identifier (PK)"
+        tests:
+          - unique
+          - not_null
+      - name: customer_unique_id
+        tests:
+          - not_null
+      - name: customer_zip_code_prefix
+        description: "First five digits, ~157 customers have a zip code prefix without matching coordinates in dim_geolocation"
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_geolocation')
+              field: geolocation_zip_code_prefix
+              config:
+                severity: warn
+      - name: customer_city
+        tests:
+          - not_null
+      - name: customer_state
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['AC','AL','AM','AP','BA','CE','DF','ES','GO','MA','MG','MS','MT','PA','PB','PE','PI','PR','RJ','RN','RO','RR','RS','SC','SE','SP','TO']
+
+  - name: dim_date
+    description: "Date dimension, one row per date_key"
+    columns:
+      - name: date_key
+        description: "Unique identifier (PK) (YYYYMMDD) for all the operative days"
+        tests:
+          - unique
+          - not_null
+      - name: full_date
+        tests:
+          - not_null
+      - name: year
+        tests:
+          - not_null
+      - name: month
+        tests: 
+          - not_null
+      - name: day
+        tests:
+          - not_null
+      - name: quarter
+        tests:
+          - not_null
+      - name: day_of_week
+        tests:
+          - not_null
+      - name: day_name
+        tests:
+          - not_null
+      - name: month_name
+        tests:
+          - not_null
+      - name: is_weekend
+        tests:
+          - not_null
+
+  - name: dim_geolocation
+    description: "Geolocation dimension, one row per geolocation_zip_code_prefix"
+    columns:
+      - name: geolocation_zip_code_prefix
+        description: "Unique identifier (PK)"
+        tests:
+          - unique
+          - not_null
+      - name: avg_lat
+        tests:
+          - not_null
+      - name: avg_lng
+        tests:
+          - not_null
+      - name: geolocation_city
+        tests:
+          - not_null
+      - name: geolocation_state
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['AC','AL','AM','AP','BA','CE','DF','ES','GO','MA','MG','MS','MT','PA','PB','PE','PI','PR','RJ','RN','RO','RR','RS','SC','SE','SP','TO']
+            
+  - name: dim_product
+    description: "Product dimension, one row per product_id"
+    columns:
+      - name: product_id
+        description: "Unique identifier (PK)"
+        tests:
+          - unique
+          - not_null
+      - name: product_category_name
+        tests:
+          - not_null
+      - name: product_category_name_english
+        tests:
+          - not_null
+      - name: product_weight_g
+        description: "It has 2 null values"
+      - name: product_length_cm
+        description: "It has 2 null values that propagates to the volume"
+      - name: product_height_cm
+        description: "It has 2 null values that propagates to the volume"
+      - name: product_width_cm
+        description: "It has 2 null values that propagates to the volume"
+      - name: product_volume_cm3
+        description: "It has 2 null values that derives from the length, height and width"
+  
+  - name: dim_seller
+    description: "Seller dimension, one row per seller_id"
+    columns:
+      - name: seller_id
+        tests:
+          - unique
+          - not_null
+      - name: seller_zip_code_prefix
+        description: "First five digits, ~ customers have a zip code prefix without matching coordinates in dim_geolocation"
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_geolocation')
+              field: geolocation_zip_code_prefix
+              config: 
+                severity: warn
+      - name: seller_city
+        tests:
+          - not_null
+      - name: seller_state
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['AC','AL','AM','AP','BA','CE','DF','ES','GO','MA','MG','MS','MT','PA','PB','PE','PI','PR','RJ','RN','RO','RR','RS','SC','SE','SP','TO']
+  

@@ -2,8 +2,8 @@ WITH source AS
 (
     SELECT 
         p.product_id AS product_id,
-        p.product_category_name AS product_category_name,
-        pc.product_category_name_english AS product_category_name_english,
+        COALESCE(p.product_category_name, 'sin_categoria') AS product_category_name,
+        COALESCE(pc.product_category_name_english, 'unknown') AS product_category_name_english,
         p.product_weight_g AS product_weight_g,
         p.product_length_cm AS product_length_cm,
         p.product_height_cm AS product_height_cm, 
