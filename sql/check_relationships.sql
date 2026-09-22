@@ -10,7 +10,7 @@ HAVING COUNT(*) > 1;
 SELECT
     order_id,
     COUNT(*) AS payment_count
-FROM analytics.stg_orders_payments
+FROM analytics.stg_order_payments
 GROUP BY order_id
 HAVING COUNT(*) > 1
 ORDER BY payment_count DESC
@@ -49,14 +49,14 @@ LIMIT 10;
 SELECT 
     product_category_name, 
     COUNT(DISTINCT product_category_name_english)
-FROM analytics.stg_category_translation
+FROM analytics.stg_product_category_name_translation
 GROUP BY product_category_name
 HAVING COUNT(DISTINCT product_category_name_english) > 1;
 
 SELECT 
     product_category_name_english, 
     COUNT(DISTINCT product_category_name) as pt_variants
-FROM analytics.stg_category_translation
+FROM analytics.stg_product_category_name_translation
 GROUP BY product_category_name_english
 HAVING COUNT(DISTINCT product_category_name) > 1;
 
