@@ -5,7 +5,9 @@ WITH source AS
         oi.order_item_id,
         oi.product_id,
         oi.seller_id,
+        s.seller_zip_code_prefix,
         o.customer_id,
+        c.customer_zip_code_prefix,
         oi.price,
         oi.freight_value,
         oi.shipping_limit_date_ts,
@@ -17,6 +19,10 @@ WITH source AS
     FROM {{  ref('stg_order_items')  }} AS oi
     LEFT JOIN {{ ref('stg_orders')  }} AS o
         ON oi.order_id = o.order_id
+    LEFT JOIN {{  ref('stg_customers')  }} AS c
+        ON o.customer_id = c.customer_id
+    LEFT JOIN {{  ref('stg_sellers')  }} AS s
+        ON oi.seller_id = s.seller_id
 ),
 
 final AS
@@ -26,7 +32,9 @@ final AS
         order_item_id,
         product_id,
         seller_id,
+        seller_zip_code_prefix,
         customer_id,
+        customer_zip_code_prefix,
         price,
         freight_value,
         shipping_limit_date_ts,

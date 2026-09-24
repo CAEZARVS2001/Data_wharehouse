@@ -172,6 +172,15 @@ models:
           - relationships:
               to: ref('dim_seller')
               field: seller_id
+      - name: seller_zip_code_prefix
+        description: "Seller zip code (FK) to dim_geolocation"
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_geolocation')
+              field: geolocation_zip_code_prefix
+              config:
+                severity: warn
       - name: customer_id
         description: "Customer who placed the order (FK)"
         tests:
@@ -179,6 +188,15 @@ models:
           - relationships:
               to: ref('dim_customer')
               field: customer_id
+      - name: customer_zip_code_prefix
+        description: "Customer zip code (FK) to dim_geolocation"
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_geolocation')
+              field: geolocation_zip_code_prefix
+              config:
+                severity: warn            
       - name: price
         description: "Item price"
         tests:
