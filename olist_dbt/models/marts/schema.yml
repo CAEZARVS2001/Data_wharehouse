@@ -140,7 +140,7 @@ models:
               values: ['AC','AL','AM','AP','BA','CE','DF','ES','GO','MA','MG','MS','MT','PA','PB','PE','PI','PR','RJ','RN','RO','RR','RS','SC','SE','SP','TO']
   
   - name: fact_order_items
-    description: "Order line items — one row per product within an order (grain: order_id + order_item_id)"
+    description: "Order line items  one row per product within an order (grain: order_id + order_item_id)"
     tests:
       - dbt_utils.unique_combination_of_columns:
           combination_of_columns:
@@ -210,14 +210,14 @@ models:
           - dbt_utils.expression_is_true:
               expression: ">= 0"
       - name: purchase_date_key
-        description: "FK to dim_date — date the order was purchased"
+        description: "FK to dim_date  date the order was purchased"
         tests:
           - not_null
           - relationships:
               to: ref('dim_date')
               field: date_key
       - name: approved_date_key
-        description: "FK to dim_date — date the order was approved (nullable: not all orders reach this status)"
+        description: "FK to dim_date  date the order was approved (nullable: not all orders reach this status)"
         tests:
           - relationships:
               to: ref('dim_date')
@@ -225,7 +225,7 @@ models:
               config:
                 severity: warn
       - name: delivered_carrier_date_key
-        description: "FK to dim_date — date handed to carrier (nullable)"
+        description: "FK to dim_date  date handed to carrier (nullable)"
         tests:
           - relationships:
               to: ref('dim_date')
@@ -233,7 +233,7 @@ models:
               config:
                 severity: warn
       - name: delivered_customer_date_key
-        description: "FK to dim_date — date delivered to customer (nullable: order may not be delivered yet)"
+        description: "FK to dim_date  date delivered to customer (nullable: order may not be delivered yet)"
         tests:
           - relationships:
               to: ref('dim_date')
@@ -241,7 +241,7 @@ models:
               config:
                 severity: warn
       - name: estimated_delivery_date_key
-        description: "FK to dim_date — estimated delivery date"
+        description: "FK to dim_date estimated delivery date"
         tests:
           - not_null
           - relationships:
@@ -249,7 +249,7 @@ models:
               field: date_key
   
   - name: fact_payments
-    description: "Payment events — one row per payment method used within an order (grain: order_id + payment_sequential)"
+    description: "Payment events one row per payment method used within an order (grain: order_id + payment_sequential)"
     tests:
       - dbt_utils.unique_combination_of_columns:
           combination_of_columns:
@@ -262,13 +262,35 @@ models:
           - relationships:
               to: ref('stg_orders')
               field: order_id
+      - name: customer_id
+        description: "Customer who paid"
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_customer')
+              field: customer_id
+      - name: purchase_date_key
+        description: "FK to dim_date"
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_date')
+              field: date_key
       - name: payment_type
         tests:
           - accepted_values:
               values: ['credit_card','boleto','voucher','debit_card','not_defined']
+      - name: payment_installments
+        description: "Tells the fixed installments"
+        tests:
+          - not_null
+      - name: payment_value
+        description: "Total payment of the order"
+        tests:
+          - not_null
   
   - name: fact_reviews
-    description: "Review events — one row per review associated with an order (grain: review_id + order_id)"
+    description: "Review events one row per review associated with an order (grain: review_id + order_id)"
     tests:
       - dbt_utils.unique_combination_of_columns:
           combination_of_columns:
@@ -286,6 +308,20 @@ models:
           - relationships:
               to: ref('stg_orders')
               field: order_id
+      - name: customer_id
+        description: "Customer that let the review"
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_customer')
+              field: customer_id
+      - name: review_date_key
+        description: "FK to dim_date"
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_date')
+              field: date_key
       - name: review_score
         description: "Score given by the customer, from 1 (worst) to 5 (best)"
         tests:
